@@ -9,7 +9,8 @@ import {
   Keyboard,
 } from "react-native";
 import React, { useState, useEffect } from "react";
-import { addDoc, collection } from "firebase/firestore";
+import ProgressBar from "react-native-animated-progress";
+// import { addDoc, collection } from "firebase/firestore";
 import { firebase } from "../config";
 import { useNavigation } from "@react-navigation/native";
 
@@ -18,6 +19,7 @@ const CreateBlog = () => {
   const [title, setTitle] = useState("");
   const [blog, setBlog] = useState("");
   const navigation = useNavigation();
+
   useEffect(() => {
     firebase
       .firestore()
@@ -66,39 +68,67 @@ const CreateBlog = () => {
   //   return <SafeAreaView style={styles.container}></SafeAreaView>;
   return (
     <View style={styles.container}>
-      <Text style={{ textAlign: "center", fontWeight: "bold", fontSize: 26 }}>
-        Write Your Blog Here
-      </Text>
-      <View style={{ marginTop: 40 }}>
-        <TextInput
-          style={styles.textInput}
-          placeholder="BlogTitle"
-          onChangeText={(title) => setTitle(title)}
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
-        <TextInput
-          style={styles.textBlog}
-          placeholder="Maintain within 50 words."
-          onChangeText={(blog) => setBlog(blog)}
-          autoCorrect={false}
-          autoCapitalize="none"
-          multiline={true}
-          numberOfLines={10}
-          textAlignVertical="top"
-        />
-      </View>
-      <View style={styles.buttonView}>
-        <TouchableOpacity
-          onPress={() => {
-            postBlog();
-            navigation.navigate("Dashboard");
-          }}
-          style={styles.button}
-        >
-          <Text style={{ fontWeight: "bold", fontSize: 22 }}>Submit</Text>
-        </TouchableOpacity>
-      </View>
+      <ScrollView>
+        <Text style={{ textAlign: "center", fontWeight: "bold", fontSize: 26 }}>
+          Write Your Blog Here
+        </Text>
+        <View style={{ marginTop: 40 }}>
+          <TextInput
+            maxLength={30}
+            style={styles.textInput}
+            placeholder="BlogTitle"
+            onChangeText={(title) => setTitle(title)}
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+          <ProgressBar
+            style={{ margin: 10, paddingTop: 20 }}
+            height={7}
+            progress={100}
+            backgroundColor="#00e4d0"
+            shadowColor="#000"
+            animated={true}
+          />
+
+          <Text style={{ padding: 10, fontSize: 20 }}>
+            {blog
+              .split(" ")
+              .map((word) => word && "🍕")
+              .join(" ")}
+          </Text>
+          <ProgressBar
+            height={7}
+            progress={100}
+            width={85}
+            backgroundColor="#00e4d0"
+            shadowColor="#000"
+            animated={true}
+          />
+
+          <TextInput
+            maxLength={300}
+            style={styles.textBlog}
+            placeholder="Write your Story"
+            onChangeText={(blog) => setBlog(blog)}
+            autoCorrect={false}
+            autoCapitalize="none"
+            multiline={true}
+            numberOfLines={10}
+            textAlignVertical="top"
+          />
+        </View>
+        <View style={styles.buttonView}>
+          <TouchableOpacity
+            onPress={() => {
+              postBlog();
+              navigation.navigate("Dashboard");
+            }}
+            style={styles.button}
+          >
+            <Text style={{ fontWeight: "bold", fontSize: 22 }}>Submit</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </View>
   );
 };
@@ -117,6 +147,7 @@ const styles = StyleSheet.create({
   textInput: {
     marginLeft: 20,
     marginRight: 20,
+    marginBottom: 20,
     padding: 20,
     // paddingBottom: 10,
     // width: 400,
@@ -143,7 +174,7 @@ const styles = StyleSheet.create({
     marginTop: 50,
     height: 40,
     width: 100,
-    backgroundColor: "#026efd",
+    backgroundColor: "#00e4d0",
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 50,
